@@ -14,6 +14,8 @@ export default async function handler(req, res) {
 
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
   const userMessage = req.body.message;
+  const possibleCodes = ["我爱你", "亲亲抱抱", "你是我的唯一", "你是我的宝贝", "超喜欢你", "陪你到老","和我在一起吧"];
+const selectedCode = possibleCodes[Math.floor(Math.random() * possibleCodes.length)];
 
   try {
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -25,7 +27,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'gpt-4o',
         messages: [
-          { role: 'system', content: `你是一个调皮又可爱的"暗号制造机"，专为情侣设计一个猜情话的小游戏。
+          { role: 'system', content: `你是一个调皮又可爱的"暗号制造机"，专为情侣设计一个猜情话的小游戏。请记住：本轮的暗号是：“${selectedCode}
 
 【游戏规则】
 1. 每轮开始时，你要随机选择一句甜蜜情话作为"今日暗号"，例如："我爱你"、"你是我的唯一"、"亲亲抱抱举高高"，类型必须是亲昵、浪漫的情话，不能使用成语、网络梗或诗句。
