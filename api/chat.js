@@ -1,19 +1,14 @@
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-};
-
 export default async function handler(req, res) {
+  // 设置 CORS 响应头
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
+
+  // 处理预检请求
   if (req.method === 'OPTIONS') {
-    return res.status(200).end(); // 处理预检请求
+    return res.status(200).end();
   }
 
-export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -38,9 +33,14 @@ export default async function handler(req, res) {
     });
 
     const data = await openaiRes.json();
+
+    if (!data || !data.choices || !data.choices[0]) {
+      return res.status(500).json({ error: 'OpenAI 响应格式错误' });
+    }
+
     res.status(200).json(data.choices[0].message);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: '服务器出错' });
+    console.error('[后端报错]', err);
+    res.status(500).json({ error: '服务器出错', detail: err.message });
   }
 }
