@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const userMessage = req.body.message;
 
   try {
-    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    const openaiRes = await fetch('love-code-api.vercel.app', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
