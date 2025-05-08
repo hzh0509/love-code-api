@@ -4,7 +4,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // 处理预检请求
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -33,14 +32,23 @@ export default async function handler(req, res) {
     });
 
     const data = await openaiRes.json();
+    console.log('[OpenAI 原始响应]', JSON.stringify(data, null, 2)); // 日志输出
 
-    if (!data || !data.choices || !data.choices[0]) {
-      return res.status(500).json({ error: 'OpenAI 响应格式错误' });
+    if (data?.choices?.[0]?.message?.content) {
+      res.status(200).json(data.choices[0].message);
+    } else if (data?.error) {
+      res.status(500).json({
+        error: 'OpenAI API 返回错误',
+        detail: data.error
+      });
+    } else {
+      res.status(500).json({
+        error: 'OpenAI 响应格式错误',
+        raw: data
+      });
     }
-
-    res.status(200).json(data.choices[0].message);
   } catch (err) {
-    console.error('[后端报错]', err);
-    res.status(500).json({ error: '服务器出错', detail: err.message });
+    console.error('[后端异常]', err);
+    res.status(500).json({ error: '服务器异常', message: err.message });
   }
 }
