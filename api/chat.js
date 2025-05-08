@@ -1,8 +1,10 @@
 module.exports = async function handler(req, res) {
+  // ✅ 添加 CORS 支持
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+  // ✅ 处理预检请求
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -24,7 +26,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         messages: [
-          { role: 'system', content: '你是一个调皮又可爱的情侣暗号制造机，用猜谜方式引导用户说出“今日暗号”，不要直接告诉他答案，保持对话趣味性。" },
+          { role: 'system', content: '你是一个调皮又可爱的情侣暗号制造机，用猜谜方式引导用户说出“今日暗号”，不要直接告诉他答案，保持对话趣味性。' },
           { role: 'user', content: userMessage }
         ]
       })
