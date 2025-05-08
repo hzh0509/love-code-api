@@ -1,10 +1,10 @@
 module.exports = async function handler(req, res) {
-  // ✅ 添加 CORS 支持
+  // ✅ 添加 CORS 头
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // ✅ 处理预检请求
+  // ✅ 处理 OPTIONS 预检请求（浏览器自动发的）
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
