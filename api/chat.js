@@ -1,10 +1,9 @@
-module.exports = async function handler(req, res) {
-  // ✅ 添加 CORS 头
+// 改为 ES Module 写法
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // ✅ 处理 OPTIONS 预检请求（浏览器自动发的）
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -38,18 +37,12 @@ module.exports = async function handler(req, res) {
     if (data?.choices?.[0]?.message?.content) {
       res.status(200).json(data.choices[0].message);
     } else if (data?.error) {
-      res.status(500).json({
-        error: 'OpenAI API 返回错误',
-        detail: data.error
-      });
+      res.status(500).json({ error: 'OpenAI API 返回错误', detail: data.error });
     } else {
-      res.status(500).json({
-        error: 'OpenAI 响应格式错误',
-        raw: data
-      });
+      res.status(500).json({ error: 'OpenAI 响应格式错误', raw: data });
     }
   } catch (err) {
     console.error('[后端异常]', err);
     res.status(500).json({ error: '服务器异常', message: err.message });
   }
-};
+}
