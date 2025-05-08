@@ -1,5 +1,4 @@
-export default async function handler(req, res) {
-  // 设置 CORS 响应头
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -25,14 +24,14 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         messages: [
-          { role: 'system', content: '你是一个调皮又可爱的情侣暗号制造机，用猜谜方式引导用户说出“今日暗号”，不要直接告诉他答案，保持对话趣味性。' },
+          { role: 'system', content: '你是一个调皮又可爱的情侣暗号制造机，用猜谜方式引导用户说出“今日暗号”，不要直接告诉他答案，保持对话趣味性。" },
           { role: 'user', content: userMessage }
         ]
       })
     });
 
     const data = await openaiRes.json();
-    console.log('[OpenAI 原始响应]', JSON.stringify(data, null, 2)); // 日志输出
+    console.log('[OpenAI 原始响应]', JSON.stringify(data, null, 2));
 
     if (data?.choices?.[0]?.message?.content) {
       res.status(200).json(data.choices[0].message);
@@ -51,4 +50,4 @@ export default async function handler(req, res) {
     console.error('[后端异常]', err);
     res.status(500).json({ error: '服务器异常', message: err.message });
   }
-}
+};
