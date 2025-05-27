@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+  const DEEPSEEK_API_KEY = 'sk-2fb61b97fc3c463083803af9215e2e46'; // 使用 DeepSeek API Key
   const clientMessages = req.body.messages;
   const selectedCode = req.body.code || '89203416'; // fallback 暗号
 
@@ -42,14 +42,14 @@ export default async function handler(req, res) {
 请你用超级可爱又耐心的语气陪她一步步解谜吧，不许跳关哦～`;
 
   try {
-    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    const deepSeekRes = await fetch('https://api.deepseek.com/chat/completions', { // 替换为 DeepSeek 的 API URL
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${OPENAI_API_KEY}`
+        'Authorization': `Bearer ${DEEPSEEK_API_KEY}` // 使用 DeepSeek 的 API 密钥
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'deepseek-chat',  // 使用 DeepSeek 的聊天模型
         messages: [
           { role: 'system', content: systemPrompt },
           ...clientMessages
@@ -57,11 +57,11 @@ export default async function handler(req, res) {
       })
     });
 
-    const data = await openaiRes.json();
+    const data = await deepSeekRes.json();
     if (data?.choices?.[0]?.message?.content) {
       res.status(200).json(data.choices[0].message);
     } else {
-      res.status(500).json({ error: 'OpenAI API 返回错误', detail: data.error || data });
+      res.status(500).json({ error: 'DeepSeek API 返回错误', detail: data.error || data });
     }
   } catch (err) {
     console.error('[后端异常]', err);
